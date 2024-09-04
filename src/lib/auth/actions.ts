@@ -76,13 +76,15 @@ export async function signup(_: any, formData: FormData): Promise<ActionResponse
     const err = parsed.error.flatten();
     return {
       fieldError: {
+        fullName: err.fieldErrors.fullName?.[0],
         email: err.fieldErrors.email?.[0],
         password: err.fieldErrors.password?.[0],
+        confirmPassword: err.fieldErrors.confirmPassword?.[0],
       },
     };
   }
 
-  const { email, password } = parsed.data;
+  const { fullName, email, password } = parsed.data;
 
   const existingUser = await db.query.users.findFirst({
     where: (table, { eq }) => eq(table.email, email),
@@ -99,6 +101,7 @@ export async function signup(_: any, formData: FormData): Promise<ActionResponse
   const hashedPassword = await new Scrypt().hash(password);
   await db.insert(users).values({
     id: userId,
+    fullName,
     email,
     hashedPassword,
   });

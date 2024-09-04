@@ -36,6 +36,17 @@ export function Signup() {
 
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="email">Full Name</Label>
+            <Input
+              id="fullName"
+              required
+              placeholder="Ahmad Jaber"
+              autoComplete="fullName"
+              name="fullName"
+              type="input"
+            />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -53,6 +64,16 @@ export function Signup() {
               name="password"
               required
               autoComplete="current-password"
+              placeholder="********"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <PasswordInput
+              id="confirmPassword"
+              name="confirmPassword"
+              required
               placeholder="********"
             />
           </div>

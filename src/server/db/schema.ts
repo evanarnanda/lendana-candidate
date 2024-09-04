@@ -16,6 +16,7 @@ export const users = pgTable(
   "users",
   {
     id: varchar("id", { length: 21 }).primaryKey(),
+    fullName: varchar("full_name", { length: 255 }).notNull(),
     discordId: varchar("discord_id", { length: 255 }).unique(),
     email: varchar("email", { length: 255 }).unique().notNull(),
     emailVerified: boolean("email_verified").default(false).notNull(),

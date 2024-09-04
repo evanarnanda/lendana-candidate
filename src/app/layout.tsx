@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: APP_TITLE,
     template: `%s | ${APP_TITLE}`,
   },
-  description: "Acme - Simple auth with lucia and trpc",
+  description: "Lendana - Gateway for people seek international job",
   icons: [{ rel: "icon", url: "/icon.png" }],
 };
 

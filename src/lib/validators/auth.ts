@@ -1,8 +1,13 @@
 import { z } from "zod";
 
 export const signupSchema = z.object({
+  fullName: z.string().min(1, "Please provide your full name.").max(255),
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(1, "Please provide your password.").max(255),
+  confirmPassword: z.string().min(1, "Please reinput your password.").max(255),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 export type SignupInput = z.infer<typeof signupSchema>;
 

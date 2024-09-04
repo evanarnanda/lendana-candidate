@@ -46,3 +46,7 @@ application.log
 /blob-report/
 /playwright/.cache/
 tests/e2e/output
+
+.nix-shell
+
+dump.rdb

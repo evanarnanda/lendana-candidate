@@ -58,8 +58,12 @@ Add the following environment variables to your **github actions repository secr
 
 ## Roadmap
 
+- [ ] Profile Setting
+    - [ ] Bio Data
+    - [ ] Study Record
+    - [ ] Work Record
+    - [ ] Skill Record
 - [ ] Update Password
-- [x] Stripe Integration
 <!-- - [x] API Rate-Limiting see branch - [upstash-ratelimiting](https://github.com/iamtouha/next-lucia-auth/tree/upstash-ratelimiting) -->
 - [ ] Admin Dashboard (under consideration)
 - [ ] Role-Based Access Policy (under consideration)
