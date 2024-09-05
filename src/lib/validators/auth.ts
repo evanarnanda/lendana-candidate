@@ -34,13 +34,13 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 export const biodataSchema = z.object({
   nik: z.number().min(16, "Please provide your full NIK.").max(16),
-  fullname: z.string().min(1, "Please enter a valid email"). max(255),
-  gender: z.string().min(1, "Please provide your gender.").max(255),
-  bloodtype: z.string(),
-  maritalstatus: z.string(),
-  placeofbirth: z.string(),
-  dateofbirth: z.string().date(), 
-  religion: z.string(),
-  nationality: z.string(),
+  fullname: z.string().min(1, "Please enter your Full Name"). max(255),
+  gender: z.string().nullable(),
+  bloodtype: z.string().nullable(),
+  maritalstatus: z.string().nullable(),
+  placeofbirth: z.string().nullable(),
+  dateofbirth: z.string().date().nullable(), 
+  religion: z.string().nullable(),
+  nationality: z.string().nullable(),
 })
 export type BiodataInput = z.infer<typeof biodataSchema>;

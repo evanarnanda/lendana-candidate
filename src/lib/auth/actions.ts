@@ -20,7 +20,7 @@ import {
   biodataSchema,
   BiodataInput,
 } from "@/lib/validators/auth";
-import { biodatas, emailVerificationCodes, passwordResetTokens, users } from "@/server/db/schema";
+import { bioDatas, emailVerificationCodes, passwordResetTokens, users } from "@/server/db/schema";
 import { sendMail, EmailTemplate } from "@/lib/email";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Paths } from "../constants";
@@ -292,10 +292,14 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
   if (!user) {
     return redirect(Paths.Login);
   }
+  // console.log(user)
   
   const obj = Object.fromEntries(formData.entries());
 
+  console.log(obj)
+
   const parsed = biodataSchema.safeParse(obj);
+  console.log(parsed.error?.flatten())
   if (!parsed.success) {
     const err = parsed.error.flatten();
     return {
@@ -312,7 +316,7 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
       },
     };
   }
-
+  console.log(parsed.data);
   const { nik, fullname, gender, bloodtype, maritalstatus, placeofbirth, dateofbirth, religion, nationality } = parsed.data;
 
   // check if nik already used by other user
@@ -329,19 +333,19 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
   // }
   const id = generateId(21);
 
-  await db.insert(biodatas).values({
-    id,
-    userId: user.id,
-    nik,
-    fullname,
-    gender,
-    bloodtype,
-    maritalstatus,
-    placeofbirth,
-    dateofbirth,
-    religion,
-    nationality,
-  });
+  // await db.insert(biodatas).values({
+  //   id,
+  //   userId: user.id,
+  //   nik,
+  //   fullname,
+  //   gender,
+  //   bloodtype,
+  //   maritalstatus,
+  //   placeofbirth,
+  //   dateofbirth,
+  //   religion,
+  //   nationality,
+  // });
 
 
   return redirect(Paths.Dashboard);

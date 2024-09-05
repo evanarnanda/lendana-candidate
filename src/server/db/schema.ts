@@ -108,20 +108,20 @@ export const postRelations = relations(posts, ({ one }) => ({
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 
-export const biodatas = pgTable(
-  "biodata",
+export const bioDatas = pgTable(
+  "bio_data",
   {
     id: varchar("id", { length: 21 }).primaryKey(),
     userId: varchar("user_id", { length: 21 }).notNull(),
     nik: varchar("nik", { length: 16 }).notNull(),
     fullname: varchar("fullname", { length: 255 }).notNull(),
-    gender: varchar("gender", { length: 255 }).notNull(),
-    bloodtype: varchar("bloodtype", { length: 255 }),
-    maritalstatus: varchar("maritalstatus", { length: 255 }),
-    placeofbirth: varchar("placeofbirth", { length: 255 }),
-    dateofbirth: varchar("dateofbirth", { length: 255 }),
-    religion: varchar("religion", { length: 255 }),
-    nationality: varchar("nationality", { length: 255 }),
+    genderId: varchar("gender_id", { length: 10 }),
+    bloodtype: varchar("bloodtype", { length: 10 }),
+    maritalId: varchar("martial_id", { length: 10 }),
+    placeofbirthId: varchar("placeofbirth_id", { length: 10 }),
+    dateofbirth: timestamp("dateofbirth", { mode: "date" }),
+    religionId: varchar("religion_id", { length: 10 }),
+    nationalityId: varchar("nationality_id", { length: 10 }),
     updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(() => new Date()),
   },
   (t) => ({
@@ -129,9 +129,125 @@ export const biodatas = pgTable(
   })
 );
 
-export const biodataRelation = relations(biodatas, ({ one }) => ({
+export const bioDataRelation = relations(bioDatas, ({ one }) => ({
   user: one(users, {
-    fields: [biodatas.userId],
+    fields: [bioDatas.userId],
     references: [users.id],
   }),
+  gender: one(genders, {
+    fields: [bioDatas.genderId],
+    references: [genders.id],
+  }),
+  bloodtype: one(bloodtypes, {
+    fields: [bioDatas.bloodtype],
+    references: [bloodtypes.id],
+  }),
+  maritalStatus: one(maritalStatuses, {
+    fields: [bioDatas.maritalId],
+    references: [maritalStatuses.id],
+  }),
+  placeOfBirth: one(placeOfBirths, {
+    fields: [bioDatas.placeofbirthId],
+    references: [placeOfBirths.id],
+  }),
+  religion: one(religions, {
+    fields: [bioDatas.religionId],
+    references: [religions.id],
+  }),
+  nationality: one(nationalities, {
+    fields: [bioDatas.nationalityId],
+    references: [nationalities.id],
+  }),
+  
+}));
+
+export const genders = pgTable(
+  "genders",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    genderNameIdx: index("gender_name_idx").on(t.name),
+  }),
+);
+
+export const genderRelation = relations(genders, ({ many }) => ({
+  bioDatas: many(bioDatas),
+}))
+
+export const bloodtypes = pgTable(
+  "bloodtypes",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    bloodtypeNameIdx: index("bloodtype_name_idx").on(t.name),
+  }),
+);
+
+export const bloodtypeRelation = relations(bloodtypes, ({ many }) => ({
+  bioDatas: many(bioDatas),
+}))
+
+export const maritalStatuses = pgTable(
+  "marital_statuses",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    maritalStatusNameIdx: index("marital_status_name_idx").on(t.name),
+  }),
+);
+
+export const maritialStatusRelation = relations(maritalStatuses, ({ many }) => ({
+  bioDatas: many(bioDatas),
+}))
+
+
+export const placeOfBirths = pgTable(
+  "place_of_births",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    placeOfBirthNameIdx: index("place_of_birth_name_idx").on(t.name),
+  }),
+);
+
+export const placeOfBirthRelation = relations(placeOfBirths, ({ many }) => ({
+  bioDatas: many(bioDatas),
+}))
+
+export const religions = pgTable(
+  "religions",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    religionNameIdx: index("religion_name_idx").on(t.name),
+  }),
+);
+
+export const religionRelation = relations(religions, ({ many }) => ({
+  bioDatas: many(bioDatas),
+}));
+
+export const nationalities = pgTable(
+  "nationalities",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+  },
+  (t) => ({
+    nationalityNameIdx: index("nationality_name_idx").on(t.name),
+  }),
+);
+
+export const nationalityRelation = relations(nationalities, ({ many }) => ({
+  bioDatas: many(bioDatas),
 }));

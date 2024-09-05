@@ -1,14 +1,12 @@
 
 'use client'
 import React from 'react'
-import { useFormState } from "react-dom";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import DialogContainer from './dialog-container'
+import BioDataDialog from './bio-data-dialog'
 import { Input } from '@/components/ui/input'
 
-import { biodata } from "@/lib/auth/actions";
 import type { User } from 'lucia';
 
 // put this to db please
@@ -71,8 +69,7 @@ const mariedStatusItem = [
 
 
 
-export default function PersonalData() {
-  const [state, formAction] = useFormState(biodata, null);
+export default function BioData() {
   return (
     <Card x-chunk="dashboard-profile-settings-personal-data">
       <CardHeader>
@@ -83,20 +80,7 @@ export default function PersonalData() {
               Please input your Bio data below based on the KTP.
             </CardDescription>
           </div>
-          <DialogContainer children={
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  defaultValue="Pedro Duarte"
-                  className="col-span-3"
-                />
-              </div>
-            </div>
-          }/>
+          <BioDataDialog/>
         </div>
       </CardHeader>
       <CardContent>
