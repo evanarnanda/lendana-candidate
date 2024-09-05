@@ -29,6 +29,7 @@ export async function GET(request: Request): Promise<Response> {
       },
     });
     const discordUser = (await discordUserRes.json()) as DiscordUser;
+    console.log(discordUser)
 
     if (!discordUser.email || !discordUser.verified) {
       return new Response(
@@ -51,6 +52,7 @@ export async function GET(request: Request): Promise<Response> {
       const userId = generateId(21);
       await db.insert(users).values({
         id: userId,
+        fullName: discordUser.global_name,
         email: discordUser.email,
         emailVerified: true,
         discordId: discordUser.id,

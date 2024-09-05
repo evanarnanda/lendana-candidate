@@ -14,7 +14,7 @@ interface Props {
 export default function TabSwitcher(props: Props) {
   props.defaultPage = props.defaultPage || 'page1'
   return (
-    <Tabs className='max-w-[500px]' defaultValue={props.defaultPage}>
+    <Tabs className='max-w-full' defaultValue={props.defaultPage}>
       <TabsList>
         <TabsTrigger value="page1">{props.Page1ButtonText}</TabsTrigger>
         <TabsTrigger value="page2">{props.Page2ButtonText}</TabsTrigger>

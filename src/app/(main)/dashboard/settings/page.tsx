@@ -5,7 +5,7 @@ import { env } from "@/env";
 import { validateRequest } from "@/lib/auth/validate-request";
 
 import TabSwitcher from "./_components/tab-switcher";
-import PersonalData from "./_components/personal-data";
+import PrivateData from "./_components/private-data";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -17,7 +17,7 @@ export default async function BillingPage() {
   const { user } = await validateRequest();
 
   if (!user) {
-    redirect("/signin");
+    redirect("/login");
   }
 
   return (
@@ -27,7 +27,7 @@ export default async function BillingPage() {
         <p className="text-sm text-muted-foreground">Manage your profile settings</p>
       </div>
       
-      <TabSwitcher Page1={<PersonalData />} Page2={<div>Study History</div>} Page1ButtonText="Bio data" Page2ButtonText="Record Study" />
+      <TabSwitcher Page1={<PrivateData />} Page2={<div>Study History</div>} Page1ButtonText="Bio data" Page2ButtonText="Record Study" />
     </div>
   );
 }

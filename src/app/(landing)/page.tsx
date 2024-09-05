@@ -29,7 +29,7 @@ const githubUrl = "https://github.com/evanarnanda/lendana-candidate";
 const features = [
   {
     name: "Resume",
-    description: "We provide auto generate resume for you",
+    description: "We provide auto generate resume for you. You can easily share to public or privately.",
     logo: NextjsIcon,
   },
   {
@@ -42,36 +42,6 @@ const features = [
     description: "We provide a platform for recruiters to manage their job postings and applicants. You can easily apply for jobs and track the status of your applications.",
     logo: LuciaAuth,
   },
-  // {
-  //   name: "Database",
-  //   description: "Drizzle with postgres database",
-  //   logo: Drizzle,
-  // },
-  // {
-  //   name: "TypeSafe Backend",
-  //   description: "Preserve type safety from backend to frontend with tRPC",
-  //   logo: TRPC,
-  // },
-  // {
-  //   name: "Subscription",
-  //   description: "Subscription with stripe",
-  //   logo: StripeLogo,
-  // },
-  // {
-  //   name: "Tailwindcss",
-  //   description: "Simple and elegant UI components built with Tailwind CSS",
-  //   logo: TailwindCss,
-  // },
-  // {
-  //   name: "Shadcn UI",
-  //   description: "A set of beautifully designed UI components for React",
-  //   logo: ShadcnUi,
-  // },
-  // {
-  //   name: "React Email",
-  //   description: "Write emails in React with ease.",
-  //   logo: ReactEmail,
-  // },
 ];
 
 const HomePage = () => {
@@ -107,8 +77,8 @@ const HomePage = () => {
             <a id="features"></a> Features
           </h1>
           <p className="text-balance mb-10 text-center text-muted-foreground md:text-lg lg:text-xl">
-            This starter template is a guide to help you get started with Next.js for large scale
-            applications. Feel free to add or remove features to suit your needs.
+            Lendana will help you to find jobs for your needs. 
+            And the system will help you to check the job's requirements and qualifications.
           </p>
           <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
             {features.map((feature, i) => (

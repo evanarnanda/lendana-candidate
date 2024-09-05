@@ -17,8 +17,10 @@ import {
   type LoginInput,
   type SignupInput,
   resetPasswordSchema,
+  biodataSchema,
+  BiodataInput,
 } from "@/lib/validators/auth";
-import { emailVerificationCodes, passwordResetTokens, users } from "@/server/db/schema";
+import { biodatas, emailVerificationCodes, passwordResetTokens, users } from "@/server/db/schema";
 import { sendMail, EmailTemplate } from "@/lib/email";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Paths } from "../constants";
@@ -282,4 +284,65 @@ async function generatePasswordResetToken(userId: string): Promise<string> {
     expiresAt: createDate(new TimeSpan(2, "h")),
   });
   return tokenId;
+}
+
+export async function biodata(_: any, formData: FormData): Promise<ActionResponse<BiodataInput>> {
+  
+  const { user } = await validateRequest();
+  if (!user) {
+    return redirect(Paths.Login);
+  }
+  
+  const obj = Object.fromEntries(formData.entries());
+
+  const parsed = biodataSchema.safeParse(obj);
+  if (!parsed.success) {
+    const err = parsed.error.flatten();
+    return {
+      fieldError: {
+        nik: err.fieldErrors.nik?.[0],
+        fullname: err.fieldErrors.fullname?.[0],
+        gender: err.fieldErrors.gender?.[0],
+        bloodtype: err.fieldErrors.bloodtype?.[0],
+        maritalstatus: err.fieldErrors.maritalstatus?.[0],
+        placeofbirth: err.fieldErrors.placeofbirth?.[0],
+        dateofbirth: err.fieldErrors.dateofbirth?.[0],
+        religion: err.fieldErrors.religion?.[0],
+        nationality: err.fieldErrors.nationality?.[0],
+      },
+    };
+  }
+
+  const { nik, fullname, gender, bloodtype, maritalstatus, placeofbirth, dateofbirth, religion, nationality } = parsed.data;
+
+  // check if nik already used by other user
+  // edit below
+  // const existingUser = await db.query.users.findFirst({
+  //   where: (table, { eq }) => eq(table.email, email),
+  //   columns: { email: true },
+  // });
+
+  // if (existingUser) {
+  //   return {
+  //     formError: "Cannot create account with that email",
+  //   };
+  // }
+  const id = generateId(21);
+
+  await db.insert(biodatas).values({
+    id,
+    userId: user.id,
+    nik,
+    fullname,
+    gender,
+    bloodtype,
+    maritalstatus,
+    placeofbirth,
+    dateofbirth,
+    religion,
+    nationality,
+  });
+
+
+  return redirect(Paths.Dashboard);
 }

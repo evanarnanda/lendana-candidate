@@ -107,3 +107,31 @@ export const postRelations = relations(posts, ({ one }) => ({
 
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
+
+export const biodatas = pgTable(
+  "biodata",
+  {
+    id: varchar("id", { length: 21 }).primaryKey(),
+    userId: varchar("user_id", { length: 21 }).notNull(),
+    nik: varchar("nik", { length: 16 }).notNull(),
+    fullname: varchar("fullname", { length: 255 }).notNull(),
+    gender: varchar("gender", { length: 255 }).notNull(),
+    bloodtype: varchar("bloodtype", { length: 255 }),
+    maritalstatus: varchar("maritalstatus", { length: 255 }),
+    placeofbirth: varchar("placeofbirth", { length: 255 }),
+    dateofbirth: varchar("dateofbirth", { length: 255 }),
+    religion: varchar("religion", { length: 255 }),
+    nationality: varchar("nationality", { length: 255 }),
+    updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(() => new Date()),
+  },
+  (t) => ({
+    biodataIdx: index("biodata_user_idx").on(t.id),
+  })
+);
+
+export const biodataRelation = relations(biodatas, ({ one }) => ({
+  user: one(users, {
+    fields: [biodatas.userId],
+    references: [users.id],
+  }),
+}));
