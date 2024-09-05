@@ -1,5 +1,5 @@
 import { date } from "drizzle-orm/pg-core";
-import { z } from "zod";
+import { custom, z } from "zod";
 
 export const signupSchema = z.object({
   fullName: z.string().min(1, "Please provide your full name.").max(255),
@@ -33,7 +33,7 @@ export const resetPasswordSchema = z.object({
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 export const biodataSchema = z.object({
-  nik: z.number().min(16, "Please provide your full NIK.").max(16),
+  nik: z.string().min(16, "Please enter valid NIK").max(16),
   fullname: z.string().min(1, "Please enter your Full Name"). max(255),
   gender: z.string().nullable(),
   bloodtype: z.string().nullable(),

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useFormState } from "react-dom";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 import { SquarePen } from "lucide-react"
@@ -31,10 +31,12 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 
 import { cn } from "@/lib/utils"
+import clsx from 'clsx';
 
 export default function BioDataDialog( ) {
   const [date, setDate] = React.useState<Date>()
   const [state, formAction] = useFormState(biodata, null);
+
 
   return (
   <Dialog>
@@ -43,185 +45,227 @@ export default function BioDataDialog( ) {
         <SquarePen className="h-4 w-4"/>
       </Button>
     </DialogTrigger>
-    <DialogContent className="sm:max-w-[500px]">
+    <DialogContent className="sm:max-w-[500px] overflow-y-scroll max-h-screen lg: overflow-y-hidden">
       <DialogHeader>
         <DialogTitle>Edit bio data</DialogTitle>
         <DialogDescription>
           Make changes to your bio data. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
-      <form action={formAction}>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="nik" className="text-right">
-              NIK
-            </Label>
-            <Input
-              id="nik"
-              name='nik'
-              type="number"
-              placeholder="Enter your NIK"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Full Name
-            </Label>
-            <Input
-              id="fullname"
-              name='fullname'
-              placeholder="Enter your full name"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="gender" className="text-right">
-              Gender
-            </Label>
-            <Select name='gender'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Gender</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Blood Type
-            </Label>
-            <Select name='bloodtype'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a blood type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Blood Type</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="maritalstatus" className="text-right">
-              Marital Status
-            </Label>
-            <Select name='maritalstatus'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a marital status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Marita Status</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Place of Birth
-            </Label>
-            <Select name='placeofbirth'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a place of birth" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Place of Birth</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Date of Birth
-            </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "col-span-3 justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                  name='dateofbirth'
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "dd MMMM yyyy") : <span>Pick a date of birth</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start" >
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
+        <form action={formAction}>
+          <div className="grid gap-2 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="nik" className="text-right">
+                NIK
+              </Label>
+              <Input
+                id="nik"
+                name='nik'
+                type="number"
+                placeholder="Enter your NIK"
+                className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.nik})}
                 />
-              </PopoverContent>
-            </Popover>
+                {state?.fieldError?.nik && (
+                <>
+                <span className='col-span-1'></span>
+                <span className='col-span-3 text-left text-sm text-red-400'>{state?.fieldError?.nik}</span>
+                </>
+                )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Full Name
+              </Label>
+              <Input
+                id="fullname"
+                name='fullname'
+                placeholder="Enter your full name"
+                className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.fullname})}
+              />
+              {state?.fieldError?.fullname && (
+                <>
+                <span className='col-span-1'></span>
+                <span className='col-span-3 text-left text-sm text-red-400'>{state?.fieldError?.fullname}</span>
+                </>
+                )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="gender" className="text-right">
+                Gender
+              </Label>
+              <Select name='gender'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.gender})}>
+                  <SelectValue placeholder="Select a gender" />
+                </SelectTrigger>
+                {state?.fieldError?.gender && (
+                <>
+                <span className='col-span-1'></span>
+                <span className='col-span-3 text-left text-sm text-red-400'>{state?.fieldError?.gender}</span>
+                </>
+                )}
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Gender</SelectLabel>
+                    <SelectItem value="1">Male</SelectItem>
+                    <SelectItem value="2">Female</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Blood Type
+              </Label>
+              <Select name='bloodtype'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.bloodtype})}>
+                  <SelectValue placeholder="Select a blood type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Blood Type</SelectLabel>
+                    <SelectItem value="1">A+</SelectItem>
+                    <SelectItem value="2">A-</SelectItem>
+                    <SelectItem value="3">B+</SelectItem>
+                    <SelectItem value="4">B-</SelectItem>
+                    <SelectItem value="5">AB+</SelectItem>
+                    <SelectItem value="6">AB-</SelectItem>
+                    <SelectItem value="7">O+</SelectItem>
+                    <SelectItem value="8">O-</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="maritalstatus" className="text-right">
+                Marital Status
+              </Label>
+              <Select name='maritalstatus'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.maritalstatus})}>
+                  <SelectValue placeholder="Select a marital status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Marital Status</SelectLabel>
+                    <SelectItem value="1">Single</SelectItem>
+                    <SelectItem value="2">Married</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Place of Birth
+              </Label>
+              <Select name='placeofbirth'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.placeofbirth})}>
+                  <SelectValue placeholder="Select a place of birth" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Place of Birth</SelectLabel>
+                    <SelectItem value="1">
+                      Jakarta
+                    </SelectItem>
+                    <SelectItem value="2">
+                      Surabaya
+                    </SelectItem>
+                    <SelectItem value="3">
+                      Bandung
+                    </SelectItem>
+                    <SelectItem value="4">
+                      Aceh
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Date of Birth
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={clsx(cn(
+                      "col-span-3 justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    ), {"col-span-3 border-red-400": state?.fieldError?.dateofbirth})}
+                    name='dateofbirth'
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "dd MMMM yyyy") : <span>Pick a date of birth</span>}
+                  </Button>
+                </PopoverTrigger>
+                {state?.fieldError?.dateofbirth && (
+                <>
+                <span className='col-span-1'></span>
+                <span className='col-span-3 text-left text-sm text-red-400'>{state?.fieldError?.dateofbirth}</span>
+                </>
+                )}
+                <PopoverContent className="w-auto p-0" align="start" >
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              {date && (
+                <input type="hidden" name="dateofbirth" value={ format(date, "yyyy-MM-dd") } />
+              )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Religion
+              </Label>
+              <Select name='religion'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.religion})}>
+                  <SelectValue placeholder="Select a religion" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Religion</SelectLabel>
+                    <SelectItem value="1">Islam</SelectItem>
+                    <SelectItem value="2">Catholic</SelectItem>
+                    <SelectItem value="3">Christianity</SelectItem>
+                    <SelectItem value="4">Buddhism</SelectItem>
+                    <SelectItem value="5">Hinduism</SelectItem>
+                    <SelectItem value="6">Other</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="fullname" className="text-right">
+                Nationality
+              </Label>
+              <Select name='nationality'>
+                <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.nationality})}>
+                  <SelectValue placeholder="Select a nationality" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Nationality</SelectLabel>
+                    <SelectItem value="1">Indonesia</SelectItem>
+                    <SelectItem value="2">Malaysia</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Religion
-            </Label>
-            <Select name='religion'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a religion" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Religion</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="fullname" className="text-right">
-              Nationality
-            </Label>
-            <Select name='nationality'>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a nationality" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Nationality</SelectLabel>
-                  
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        
-        <div className='grid grid-cols-4 items-center gap-4'>
-            {state?.fieldError ? (
-              <ul className="col-span-4 list-disc space-y-1 rounded-lg border bg-destructive/10 p-2 text-[0.8rem] font-medium text-destructive">
-                {Object.values(state.fieldError).map((err) => (
-                  <li className="ml-4" key={err}>
-                    {err}
-                  </li>
-                ))}
-              </ul>
-            ) : state?.formError ? (
-              <p className="col-span-4 rounded-lg border bg-destructive/10 p-2 text-[0.8rem] font-medium text-destructive">
-                {state?.formError}
-              </p>
-            ) : null}
-          </div>
-        <DialogFooter className='mt-4'>
-          <SubmitButton className="w-full" aria-label="submit-btn">
-            Save
-          </SubmitButton>
-        </DialogFooter>
-      </form>
+          <DialogFooter className='mt-4 gap-4'>
+            <DialogClose asChild>
+              <Button type="button" className='bg-red-500 hover:bg-red-600 text-white'>
+                Cancel
+              </Button>
+            </DialogClose>
+            <SubmitButton className="w-full" aria-label="submit-btn">
+              Save
+            </SubmitButton>
+          </DialogFooter>
+        </form>
       </DialogContent>
   </Dialog>
   )

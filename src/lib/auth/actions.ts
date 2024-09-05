@@ -292,11 +292,8 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
   if (!user) {
     return redirect(Paths.Login);
   }
-  // console.log(user)
   
   const obj = Object.fromEntries(formData.entries());
-
-  console.log(obj)
 
   const parsed = biodataSchema.safeParse(obj);
   console.log(parsed.error?.flatten())
