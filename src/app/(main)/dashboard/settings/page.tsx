@@ -5,7 +5,7 @@ import { env } from "@/env";
 import { validateRequest } from "@/lib/auth/validate-request";
 
 import TabSwitcher from "./_components/tab-switcher";
-import PrivateData from "./_components/private-data";
+import PrivateData from "./_components/PrivateData";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   description: "Manage your profile and account settings",
 };
 
-export default async function BillingPage() {
+
+export default async function SettingPage() {
   const { user } = await validateRequest();
 
   if (!user) {

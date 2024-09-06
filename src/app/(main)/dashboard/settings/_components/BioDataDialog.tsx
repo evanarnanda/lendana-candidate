@@ -1,11 +1,10 @@
 'use client'
-
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormState } from "react-dom";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
-import { SquarePen } from "lucide-react"
+import { CheckCircleIcon, SquarePen } from "lucide-react"
 
 import { biodata } from "@/lib/auth/actions";
 import { SubmitButton } from '@/components/submit-button';
@@ -27,15 +26,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { CalendarIcon } from "@radix-ui/react-icons"
+import { CalendarIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 
 import { cn } from "@/lib/utils"
 import clsx from 'clsx';
+import { toast } from 'sonner';
+
+import { api } from "@/trpc/server";
 
 export default function BioDataDialog( ) {
   const [date, setDate] = React.useState<Date>()
   const [state, formAction] = useFormState(biodata, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success("Bio data saved!", {
+        icon: <CheckCircleIcon className="h-5 w-5 text-success" />,
+      });
+    }
+    if (state?.formError) {
+      console.log(state?.formError)
+      toast.error(state.formError, {
+        icon: <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />,
+      });
+    }
+  }, [state]);
+
+
 
 
   return (
@@ -123,14 +141,11 @@ export default function BioDataDialog( ) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Blood Type</SelectLabel>
-                    <SelectItem value="1">A+</SelectItem>
-                    <SelectItem value="2">A-</SelectItem>
-                    <SelectItem value="3">B+</SelectItem>
-                    <SelectItem value="4">B-</SelectItem>
-                    <SelectItem value="5">AB+</SelectItem>
-                    <SelectItem value="6">AB-</SelectItem>
-                    <SelectItem value="7">O+</SelectItem>
-                    <SelectItem value="8">O-</SelectItem>
+                    <SelectItem value="1">A</SelectItem>
+                    <SelectItem value="2">B</SelectItem>
+                    <SelectItem value="3">AB</SelectItem>
+                    <SelectItem value="4">O</SelectItem>
+                    <SelectItem value="5">-</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

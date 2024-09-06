@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { generateId, Scrypt } from "lucia";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
 import { generateRandomString, alphabet } from "oslo/crypto";
-import { eq } from "drizzle-orm";
+import { and, eq, not } from "drizzle-orm";
 import { lucia } from "@/lib/auth";
 import { db } from "@/server/db";
 import {
@@ -25,8 +25,14 @@ import { sendMail, EmailTemplate } from "@/lib/email";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Paths } from "../constants";
 import { env } from "@/env";
+import { revalidatePath } from "next/cache";
+import { PostgresError } from "postgres";
+import { logger } from "../logger";
+import { Redirect } from "next";
 
 export interface ActionResponse<T> {
+  success?: boolean;
+  redirect?: Redirect;
   fieldError?: Partial<Record<keyof T, string | undefined>>;
   formError?: string;
 }
@@ -296,7 +302,6 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
   const obj = Object.fromEntries(formData.entries());
 
   const parsed = biodataSchema.safeParse(obj);
-  console.log(parsed.error?.flatten())
   if (!parsed.success) {
     const err = parsed.error.flatten();
     return {
@@ -313,37 +318,82 @@ export async function biodata(_: any, formData: FormData): Promise<ActionRespons
       },
     };
   }
-  console.log(parsed.data);
   const { nik, fullname, gender, bloodtype, maritalstatus, placeofbirth, dateofbirth, religion, nationality } = parsed.data;
-
+  
   // check if nik already used by other user
-  // edit below
-  // const existingUser = await db.query.users.findFirst({
-  //   where: (table, { eq }) => eq(table.email, email),
-  //   columns: { email: true },
-  // });
+  const existingNIK = await db.query.bioDatas.findFirst({
+    where: (table, { eq }) => and(eq(table.nik, nik), not(eq(table.userId, user.id)))
+  });
 
-  // if (existingUser) {
-  //   return {
-  //     formError: "Cannot create account with that email",
-  //   };
-  // }
+  if (existingNIK) {
+    return {
+      fieldError: {nik:"NIK is already used by other user"}
+    };
+  }
+  // check if user already has biodata
+  const existingUserBioData = await db.query.bioDatas.findFirst({
+    where: (table, { eq }) => eq(table.userId, user.id)
+  });
+  if (existingUserBioData) {
+
+    // check if nik already used by other user
+    const existingNIK = await db.query.bioDatas.findFirst({
+      where: (table, { eq }) => and(eq(table.nik, nik), not(eq(table.userId, user.id)))
+    });
+  
+    if (existingNIK) {
+      return {
+        fieldError: {nik:"NIK is already used by other user"}
+      };
+    }
+    // if nik is not used by other user, update existing biodata
+    await db.update(bioDatas).set({
+      nik: nik,
+      fullname: fullname,
+      genderId: gender ? parseInt(gender) : null,
+      bloodtypeId: bloodtype ? parseInt(bloodtype) : null,
+      maritalId: maritalstatus ? parseInt(maritalstatus) : null,
+      placeofbirthId: placeofbirth ? parseInt(placeofbirth) : null,
+      dateofbirth: dateofbirth,
+      religionId: religion ?  parseInt(religion) : null,
+      nationalityId: nationality ? parseInt(nationality) : null,
+    }).where(
+      and(
+        eq(bioDatas.id, existingUserBioData.id), eq(bioDatas.userId, user.id)
+      )
+    );
+    revalidatePath(Paths.Settings);
+    return {
+      success: true,
+      // redirect: redirect(Paths.Settings)
+    }
+  }
+  // if not, create new biodata
   const id = generateId(21);
+  try {
+    await db.insert(bioDatas).values({
+      id,
+      userId: user.id,
+      nik: nik,
+      fullname: fullname,
+      genderId: gender ? parseInt(gender) : null,
+      bloodtypeId: bloodtype ? parseInt(bloodtype) : null,
+      maritalId: maritalstatus ? parseInt(maritalstatus) : null,
+      placeofbirthId: placeofbirth ? parseInt(placeofbirth) : null,
+      dateofbirth: dateofbirth,
+      religionId: religion ? parseInt(religion) : null,
+      nationalityId: nationality ? parseInt(nationality) : null,
+    });
+    revalidatePath(Paths.Settings);
+    return {
+      success: true,
+    }
+  } catch ( error ) {
+    logger.error(error)
+    return {
+      formError: "Something went wrong try again later"
+    };
+  }
 
-  // await db.insert(biodatas).values({
-  //   id,
-  //   userId: user.id,
-  //   nik,
-  //   fullname,
-  //   gender,
-  //   bloodtype,
-  //   maritalstatus,
-  //   placeofbirth,
-  //   dateofbirth,
-  //   religion,
-  //   nationality,
-  // });
-
-
-  return redirect(Paths.Dashboard);
 }
+

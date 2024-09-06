@@ -7,6 +7,8 @@ import {
   text,
   timestamp,
   varchar,
+  date,
+  integer,
 } from "drizzle-orm/pg-core";
 import { DATABASE_PREFIX as prefix } from "@/lib/constants";
 
@@ -113,15 +115,15 @@ export const bioDatas = pgTable(
   {
     id: varchar("id", { length: 21 }).primaryKey(),
     userId: varchar("user_id", { length: 21 }).notNull(),
-    nik: varchar("nik", { length: 16 }).notNull(),
+    nik: varchar("nik", { length: 16 }).notNull().unique(),
     fullname: varchar("fullname", { length: 255 }).notNull(),
-    genderId: varchar("gender_id", { length: 10 }),
-    bloodtype: varchar("bloodtype", { length: 10 }),
-    maritalId: varchar("martial_id", { length: 10 }),
-    placeofbirthId: varchar("placeofbirth_id", { length: 10 }),
-    dateofbirth: timestamp("dateofbirth", { mode: "date" }),
-    religionId: varchar("religion_id", { length: 10 }),
-    nationalityId: varchar("nationality_id", { length: 10 }),
+    genderId: integer("gender_id"),
+    bloodtypeId: integer("bloodtype_id"),
+    maritalId: integer("marital_id"),
+    placeofbirthId: integer("placeofbirth_id"),
+    dateofbirth: varchar("dateofbirth", { length: 10 }),
+    religionId: integer("religion_id"),
+    nationalityId: integer("nationality_id"),
     updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(() => new Date()),
   },
   (t) => ({
@@ -139,7 +141,7 @@ export const bioDataRelation = relations(bioDatas, ({ one }) => ({
     references: [genders.id],
   }),
   bloodtype: one(bloodtypes, {
-    fields: [bioDatas.bloodtype],
+    fields: [bioDatas.bloodtypeId],
     references: [bloodtypes.id],
   }),
   maritalStatus: one(maritalStatuses, {

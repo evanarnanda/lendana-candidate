@@ -8,7 +8,7 @@
     "db:push": "dotenv drizzle-kit push",
     "db:generate": "dotenv drizzle-kit generate",
     "db:migrate": "dotenv drizzle-kit migrate",
-    "db:studio": "dotenv drizzle-kit studio --port 3001 --host localhost",
+    "db:studio": "dotenv drizzle-kit studio",
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
