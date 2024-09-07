@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function BioDataSkeleton() {
   return (
-    <Card>
+    <Card x-chunk="dashboard-profile-settings-bio-data-skeleton">
       <CardHeader>
         <Skeleton className="h-7 w-24" />
         <Skeleton className="h-3 w-36" />

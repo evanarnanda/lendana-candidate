@@ -1,8 +1,9 @@
 import type { ProtectedTRPCContext } from "../../trpc";
 
 export const getBioData = async (ctx: ProtectedTRPCContext) => {
-  
-  await setTimeout(() => {}, 5000)
+
+  // Uncomment this to simulate a slow query
+  // await new Promise((resolve) => setTimeout(resolve, 3000))
   
   return ctx.db.query.bioDatas.findFirst({
     where: (table, { eq }) => eq(table.userId, ctx.user.id),

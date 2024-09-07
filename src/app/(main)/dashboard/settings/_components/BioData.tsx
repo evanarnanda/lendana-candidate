@@ -88,7 +88,7 @@ export default function BioData({ promises }: BioDataProps) {
               Please input your Bio data below based on the KTP.
             </CardDescription>
           </div>
-          <BioDataDialog/>
+          <BioDataDialog data={bioData}/>
         </div>
       </CardHeader>
       <CardContent>

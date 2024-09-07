@@ -1,5 +1,6 @@
 'use client'
-import React, { useEffect } from 'react'
+import * as React from 'react'
+import { useEffect } from 'react'
 import { useFormState } from "react-dom";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -32,12 +33,75 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { type RouterOutputs } from '@/trpc/shared'
 
-import { api } from "@/trpc/server";
 
-export default function BioDataDialog( ) {
-  const [date, setDate] = React.useState<Date>()
+interface BioDataProps {
+  data: RouterOutputs["setting"]["myBioData"];
+}
+export default function BioDataDialog({data}: BioDataProps) {
+
+  const [formData, setFormData] = React.useState<{
+    nik: string,
+    fullname: string,
+    dateofbirth?: Date 
+  }>({
+    nik: '',
+    fullname: '',
+  });
+
+  const [selectData, setSelectData] = React.useState({
+    gender: '0',
+    bloodtype: '0',
+    maritalstatus: '0',
+    placeofbirth: '0',
+    religion: '0',
+    nationality: '0',
+  });
+
+  const setDate = (date: Date) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      dateofbirth: date
+    }));
+  }
   const [state, formAction] = useFormState(biodata, null);
+
+  useEffect(() => {
+    console.log(data)
+    if (data) {
+      setFormData({
+        nik: data.nik,
+        fullname: data.fullname,
+        dateofbirth: data.dateofbirth ? new Date(data.dateofbirth) : undefined
+      })
+      setSelectData({
+        gender: data.genderId ? data.genderId.toString() : '',
+        bloodtype: data.bloodtypeId ? data.bloodtypeId.toString() : '',
+        maritalstatus: data.maritalId ? data.maritalId.toString() : '',
+        placeofbirth: data.placeofbirthId ? data.placeofbirthId.toString() : '',
+        religion: data.religionId ? data.religionId.toString() : '',
+        nationality: data.nationalityId ? data.nationalityId.toString() : '',
+      })
+    }
+
+
+  }, [data])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, nameInput?: string) => {
+      const { name, value } = e.target;
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+  };
+
+  const onHandleSelect = (nameInput: string) => (value: string) => {
+    setSelectData((prevData) => ({
+      ...prevData,
+      [nameInput]: value,
+    }));
+  };
 
   useEffect(() => {
     if (state?.success) {
@@ -79,6 +143,8 @@ export default function BioDataDialog( ) {
               <Input
                 id="nik"
                 name='nik'
+                value={formData.nik}
+                onChange={handleInputChange}
                 type="number"
                 placeholder="Enter your NIK"
                 className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.nik})}
@@ -97,6 +163,8 @@ export default function BioDataDialog( ) {
               <Input
                 id="fullname"
                 name='fullname'
+                value={formData.fullname}
+                onChange={handleInputChange}
                 placeholder="Enter your full name"
                 className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.fullname})}
               />
@@ -111,7 +179,11 @@ export default function BioDataDialog( ) {
               <Label htmlFor="gender" className="text-right">
                 Gender
               </Label>
-              <Select name='gender'>
+              <Select 
+              name='gender' 
+              value={selectData.gender}
+              onValueChange={onHandleSelect('gender')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.gender})}>
                   <SelectValue placeholder="Select a gender" />
                 </SelectTrigger>
@@ -134,7 +206,11 @@ export default function BioDataDialog( ) {
               <Label htmlFor="fullname" className="text-right">
                 Blood Type
               </Label>
-              <Select name='bloodtype'>
+              <Select 
+              name='bloodtype'
+              value={selectData.bloodtype}
+              onValueChange={onHandleSelect('bloodtype')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.bloodtype})}>
                   <SelectValue placeholder="Select a blood type" />
                 </SelectTrigger>
@@ -154,7 +230,11 @@ export default function BioDataDialog( ) {
               <Label htmlFor="maritalstatus" className="text-right">
                 Marital Status
               </Label>
-              <Select name='maritalstatus'>
+              <Select 
+              name='maritalstatus'
+              value={selectData.maritalstatus}
+              onValueChange={onHandleSelect('maritalstatus')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.maritalstatus})}>
                   <SelectValue placeholder="Select a marital status" />
                 </SelectTrigger>
@@ -171,7 +251,11 @@ export default function BioDataDialog( ) {
               <Label htmlFor="fullname" className="text-right">
                 Place of Birth
               </Label>
-              <Select name='placeofbirth'>
+              <Select 
+              name='placeofbirth'
+              value={selectData.placeofbirth}
+              onValueChange={onHandleSelect('placeofbirth')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.placeofbirth})}>
                   <SelectValue placeholder="Select a place of birth" />
                 </SelectTrigger>
@@ -204,12 +288,12 @@ export default function BioDataDialog( ) {
                     variant={"outline"}
                     className={clsx(cn(
                       "col-span-3 justify-start text-left font-normal",
-                      !date && "text-muted-foreground"
+                      !formData.dateofbirth && "text-muted-foreground"
                     ), {"col-span-3 border-red-400": state?.fieldError?.dateofbirth})}
-                    name='dateofbirth'
+                    
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "dd MMMM yyyy") : <span>Pick a date of birth</span>}
+                    {formData.dateofbirth ? format(formData.dateofbirth, "dd MMMM yyyy") : <span>Pick a date of birth</span>}
                   </Button>
                 </PopoverTrigger>
                 {state?.fieldError?.dateofbirth && (
@@ -221,21 +305,28 @@ export default function BioDataDialog( ) {
                 <PopoverContent className="w-auto p-0" align="start" >
                   <Calendar
                     mode="single"
-                    selected={date}
+                    selected={formData.dateofbirth}
                     onSelect={setDate}
                     initialFocus
                   />
                 </PopoverContent>
               </Popover>
-              {date && (
-                <input type="hidden" name="dateofbirth" value={ format(date, "yyyy-MM-dd") } />
+              {formData.dateofbirth && (
+                <Input type="hidden" 
+                name="dateofbirth" 
+                value={format(formData.dateofbirth, 'yyyy-MM-dd')} 
+                onChange={handleInputChange} />
               )}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="fullname" className="text-right">
                 Religion
               </Label>
-              <Select name='religion'>
+              <Select 
+              name='religion'
+              value={selectData.religion}
+              onValueChange={onHandleSelect('religion')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.religion})}>
                   <SelectValue placeholder="Select a religion" />
                 </SelectTrigger>
@@ -256,7 +347,11 @@ export default function BioDataDialog( ) {
               <Label htmlFor="fullname" className="text-right">
                 Nationality
               </Label>
-              <Select name='nationality'>
+              <Select 
+              name='nationality'
+              value={selectData.nationality}
+              onValueChange={onHandleSelect('nationality')}
+              >
                 <SelectTrigger className={clsx("col-span-3", {"col-span-3 border-red-400": state?.fieldError?.nationality})}>
                   <SelectValue placeholder="Select a nationality" />
                 </SelectTrigger>
