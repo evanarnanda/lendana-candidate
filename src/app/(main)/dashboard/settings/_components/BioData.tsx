@@ -92,42 +92,48 @@ export default function BioData({ promises }: BioDataProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-rows-3 grid-flow-col gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="nik">NIK</Label>
-            <h4>{bioData?.nik ? bioData.nik : "-"}</h4>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="fullname">Full Name</Label>
-            <h4>{bioData?.fullname ? bioData.fullname : "-"}</h4>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="gender">Gender</Label>
-            <h4>{bioData?.gender?.name ? bioData.gender.name : "-"}</h4>
-          </div>
-          <div className="grid grid-rows-subgrid gap-4 row-span-2">
-            <div className="row-start-2">
-              <Label htmlFor="bloodtype">Blood Type</Label>
-              <h4>{bioData?.bloodtype?.name ? bioData.bloodtype.name : "-"}</h4>
-            </div>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="mariedstatus">Maried Status</Label>
-            <h4>{bioData?.maritalStatus?.name ? bioData.maritalStatus.name : "-"}</h4>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="place-dateofbirth">Place, Date of birth</Label>
-            <h4>{bioData?.placeOfBirth?.name ? bioData.placeOfBirth.name : "-"}, {bioData?.dateofbirth ? bioData.dateofbirth : "-"}</h4>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="mariedstatus">Religion</Label>
-            <h4>{bioData?.religion?.name ? bioData.religion.name : "-"}</h4>
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="mariedstatus">Nationality</Label>
-            <h4>{bioData?.nationality?.name ? bioData.nationality.name : "-"}</h4>
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-3">
+          <Label htmlFor="nik">NIK</Label>
+          <h4>{bioData?.nik ? bioData.nik : "-"}</h4>
         </div>
+        
+        {/* Full Name spans 2 columns on larger screens */}
+        <div className="grid gap-3 lg:col-span-2">
+          <Label htmlFor="fullname">Full Name</Label>
+          <h4>{bioData?.fullname ? bioData.fullname : "-"}</h4>
+        </div>
+
+        <div className="grid gap-3">
+          <Label htmlFor="gender">Gender</Label>
+          <h4>{bioData?.gender?.name ? bioData.gender.name : "-"}</h4>
+        </div>
+        
+        <div className="grid gap-3">
+          <Label htmlFor="bloodtype">Blood Type</Label>
+          <h4>{bioData?.bloodtype?.name ? bioData.bloodtype.name : "-"}</h4>
+        </div>
+
+        <div className="grid gap-3">
+          <Label htmlFor="mariedstatus">Married Status</Label>
+          <h4>{bioData?.maritalStatus?.name ? bioData.maritalStatus.name : "-"}</h4>
+        </div>
+
+        <div className="grid gap-3">
+          <Label htmlFor="place-dateofbirth">Place, Date of Birth</Label>
+          <h4>{bioData?.placeOfBirth?.name ? bioData.placeOfBirth.name : "-"}, {bioData?.dateofbirth ? bioData.dateofbirth : "-"}</h4>
+        </div>
+
+        <div className="grid gap-3">
+          <Label htmlFor="religion">Religion</Label>
+          <h4>{bioData?.religion?.name ? bioData.religion.name : "-"}</h4>
+        </div>
+        
+        <div className="grid gap-3">
+          <Label htmlFor="nationality">Nationality</Label>
+          <h4>{bioData?.nationality?.name ? bioData.nationality.name : "-"}</h4>
+        </div>
+      </div>
       </CardContent>
   </Card>
   )
